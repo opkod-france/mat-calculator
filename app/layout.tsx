@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     type: 'website',
     title: 'Mat Calculator - Professional Photo Framing Tool',
     description: 'Calculate optimal mat dimensions for photo framing with professional accuracy',
-    url: 'https://mat-calculator-app.vercel.app',
+    url: 'https://mat-calculator.opkod.dev',
   },
   twitter: {
     card: 'summary_large_image',
