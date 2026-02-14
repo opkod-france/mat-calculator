@@ -34,16 +34,10 @@ interface PhotoInput {
 }
 
 export class MatCalculator {
-  public styles: Record<string, string>
+  public styleKeys: string[]
 
   constructor() {
-    this.styles = {
-      proportional: 'Proportional',
-      uniform: 'Uniform',
-      talon: 'Talon',
-      panoramic: 'Panoramic',
-      portrait: 'Portrait'
-    }
+    this.styleKeys = ['proportional', 'uniform', 'talon', 'panoramic', 'portrait']
   }
 
   /**
@@ -66,7 +60,7 @@ export class MatCalculator {
     if (photoWidth >= frameWidth || photoHeight >= frameHeight) {
       return {
         ...this.getEmptyResult(),
-        error: 'Photo is too large for the frame interior'
+        error: 'errorPhotoTooLarge'
       }
     }
 
@@ -98,8 +92,8 @@ export class MatCalculator {
       ...result,
       frame: { width: frameWidth, height: frameHeight },
       photo: { width: photoWidth, height: photoHeight },
-      style: this.styles[style],
-      recommendations: this.getRecommendations(result, style)
+      style,
+      recommendations: this.getRecommendationKeys(result, style)
     }
   }
 
@@ -123,7 +117,7 @@ export class MatCalculator {
     const horizontalMargin = availableWidth / 2
     const verticalMargin = availableHeight / 2
     const avgMargin = (horizontalMargin + verticalMargin) / 2
-    
+
     return {
       top: avgMargin,
       right: avgMargin,
@@ -139,7 +133,7 @@ export class MatCalculator {
     const horizontalMargin = availableWidth / 2
     const topMargin = availableHeight * 0.4
     const bottomMargin = availableHeight * 0.6
-    
+
     return {
       top: topMargin,
       right: horizontalMargin,
@@ -154,7 +148,7 @@ export class MatCalculator {
   private calculatePanoramic(availableWidth: number, availableHeight: number): MatDimensions {
     const horizontalMargin = availableWidth * 0.3
     const verticalMargin = availableHeight / 2
-    
+
     return {
       top: verticalMargin,
       right: horizontalMargin,
@@ -169,7 +163,7 @@ export class MatCalculator {
   private calculatePortrait(availableWidth: number, availableHeight: number): MatDimensions {
     const horizontalMargin = availableWidth / 2
     const verticalMargin = availableHeight * 0.3
-    
+
     return {
       top: verticalMargin,
       right: horizontalMargin,
@@ -192,30 +186,30 @@ export class MatCalculator {
   }
 
   /**
-   * Generate recommendations based on the result
+   * Generate recommendation translation keys based on the result
    */
-  private getRecommendations(result: MatDimensions, style: string): string[] {
+  private getRecommendationKeys(result: MatDimensions, style: string): string[] {
     const recommendations: string[] = []
     const { top, right, bottom, left } = result
     const avgMargin = (top + right + bottom + left) / 4
 
     if (avgMargin < 2) {
-      recommendations.push('⚠️ Very small margins - consider a larger frame')
+      recommendations.push('recSmallMargins')
     } else if (avgMargin > 10) {
-      recommendations.push('💡 Generous margins - perfect for showcasing the photo')
+      recommendations.push('recGenerousMargins')
     }
 
     if (style === 'talon' && bottom > top) {
-      recommendations.push('✨ Talon style applied - classic visual effect')
+      recommendations.push('recTalonApplied')
     }
 
     if (Math.abs(right - left) < 0.1 && Math.abs(top - bottom) < 0.1) {
-      recommendations.push('📐 Perfectly balanced margins')
+      recommendations.push('recBalancedMargins')
     }
 
     const minMargin = Math.min(top, right, bottom, left)
     if (minMargin >= 3) {
-      recommendations.push('✅ Optimal dimensions for framing')
+      recommendations.push('recOptimalDimensions')
     }
 
     return recommendations
@@ -239,7 +233,7 @@ export class MatCalculator {
    */
   private customRound(value: number): number {
     const decimalPart = value - Math.floor(value)
-    
+
     if (decimalPart > 0.5) {
       return Math.ceil(value)
     } else if (decimalPart < 0.5) {
@@ -250,4 +244,3 @@ export class MatCalculator {
     }
   }
 }
-

@@ -1,0 +1,142 @@
+{
+  "Nav": {
+    "calculator": "Calculateur",
+    "howTo": "Guide d'utilisation",
+    "contact": "Contact"
+  },
+  "Header": {
+    "title": "Calculateur de Marie-Louise",
+    "subtitle": "Outil professionnel d'encadrement photo",
+    "professional": "Professionnel",
+    "free": "Gratuit"
+  },
+  "Mode": {
+    "simple": "Simple",
+    "advanced": "Avancé",
+    "simpleDescription": "Calcul rapide avec l'essentiel",
+    "advancedDescription": "Contrôle complet avec styles et préréglages"
+  },
+  "Form": {
+    "inputParameters": "Calculez votre Marie-Louise",
+    "expand": "Développer",
+    "collapse": "Réduire",
+    "frameInterior": "Intérieur du cadre",
+    "frameDescription": "Dimensions internes de votre cadre",
+    "widthMm": "Largeur (mm)",
+    "heightMm": "Hauteur (mm)",
+    "photo": "Photo / Œuvre",
+    "photoDescription": "Dimensions de la pièce à encadrer",
+    "style": "Style de coupe",
+    "styleDescription": "Répartition des marges",
+    "presets": "Préréglages rapides",
+    "presetsDescription": "Tailles photo courantes",
+    "actions": "Actions",
+    "calculate": "Calculer",
+    "reset": "Réinitialiser",
+    "toCalculate": "pour calculer",
+    "toReset": "pour réinitialiser"
+  },
+  "Styles": {
+    "proportional": "Proportionnel — Marges égales",
+    "uniform": "Uniforme — Répartition moyenne",
+    "talon": "Talon — Beaux-arts classique",
+    "panoramic": "Panoramique — Format large",
+    "portrait": "Portrait — Accent vertical"
+  },
+  "StyleNames": {
+    "proportional": "Proportionnel",
+    "uniform": "Uniforme",
+    "talon": "Talon",
+    "panoramic": "Panoramique",
+    "portrait": "Portrait"
+  },
+  "Info": {
+    "title": "Calculateur professionnel de Marie-Louise",
+    "description": "Saisissez les dimensions de votre cadre et de votre photo pour obtenir les dimensions optimales de la marie-louise selon différents styles d'encadrement.",
+    "stylesTitle": "5 styles disponibles",
+    "stylesDescription": "Proportionnel, Uniforme, Talon, Panoramique, Portrait",
+    "previewTitle": "Aperçu visuel",
+    "previewDescription": "Visualisation en temps réel avec annotations",
+    "recommendationsTitle": "Recommandations intelligentes",
+    "recommendationsDescription": "Conseils d'expert pour un encadrement optimal"
+  },
+  "Results": {
+    "title": "Dimensions de la Marie-Louise",
+    "top": "Haut",
+    "right": "Droite",
+    "bottom": "Bas",
+    "left": "Gauche",
+    "mm": "mm",
+    "styleApplied": "Style appliqué",
+    "recommendations": "Recommandations"
+  },
+  "Preview": {
+    "title": "Aperçu visuel",
+    "photo": "Photo",
+    "frame": "Cadre : {width} × {height} mm",
+    "scale": "Échelle : {percentage} %"
+  },
+  "Calculator": {
+    "errorPhotoTooLarge": "La photo est trop grande pour l'intérieur du cadre",
+    "recSmallMargins": "Marges très petites — envisagez un cadre plus grand",
+    "recGenerousMargins": "Marges généreuses — parfait pour mettre en valeur la photo",
+    "recTalonApplied": "Style talon appliqué — poids visuel classique en bas",
+    "recBalancedMargins": "Marges parfaitement équilibrées sur tous les côtés",
+    "recOptimalDimensions": "Dimensions optimales pour l'encadrement professionnel"
+  },
+  "HowTo": {
+    "title": "Guide d'utilisation du Calculateur",
+    "heroDescription": "Un guide étape par étape pour calculer les dimensions parfaites de votre marie-louise.",
+    "step1Title": "Mesurez votre cadre",
+    "step1Description": "Mesurez les dimensions intérieures de votre cadre en millimètres. C'est l'ouverture à l'intérieur du cadre où la marie-louise sera posée — pas les dimensions extérieures.",
+    "step2Title": "Mesurez votre photo",
+    "step2Description": "Mesurez la photo ou l'œuvre que vous souhaitez encadrer. Saisissez la largeur et la hauteur en millimètres. Mesurez la zone visible que vous souhaitez afficher.",
+    "step3Title": "Choisissez un style",
+    "step3Description": "Sélectionnez un style de coupe adapté à votre esthétique. Pour l'art traditionnel, essayez le style Talon qui ajoute plus de poids en bas — une technique classique d'encadrement beaux-arts.",
+    "step4Title": "Lisez vos résultats",
+    "step4Description": "Le calculateur affiche les marges exactes pour chaque côté (haut, droite, bas, gauche) en millimètres. Utilisez ces mesures lors de la coupe de votre carton de marie-louise.",
+    "stylesTitle": "Comprendre les styles de Marie-Louise",
+    "proportionalDesc": "Marges égales sur tous les côtés. L'approche la plus simple et moderne, idéale pour la photographie contemporaine.",
+    "uniformDesc": "Distribution moyennée qui crée un poids visuel uniforme. Parfait pour les formats photo standard.",
+    "talonDesc": "Marge inférieure plus large suivant la tradition des beaux-arts. Cela crée une stabilité visuelle et c'est le style préféré pour un encadrement de qualité galerie.",
+    "panoramicDesc": "Marges horizontales réduites pour mettre en valeur les images en format large. Parfait pour la photographie de paysage.",
+    "portraitDesc": "Marges verticales réduites pour mettre en valeur les images en hauteur. Idéal pour les portraits verticaux et les photos d'architecture.",
+    "tipsTitle": "Conseils de pro",
+    "tip1": "Ajoutez toujours 2-3mm aux dimensions de votre photo pour la tolérance de montage.",
+    "tip2": "Pour une conservation sans acide, utilisez du carton de qualité musée.",
+    "tip3": "Utilisez une lame bien affûtée et une règle métallique pour des coupes nettes.",
+    "tip4": "Faites des coupes d'essai sur des chutes de carton avant votre pièce finale."
+  },
+  "Contact": {
+    "title": "Nous contacter",
+    "heroDescription": "Une question, suggestion ou un bug à signaler ? N'hésitez pas à nous écrire.",
+    "nameLabel": "Votre nom",
+    "namePlaceholder": "Jean Dupont",
+    "emailLabel": "Adresse e-mail",
+    "emailPlaceholder": "jean@exemple.com",
+    "subjectLabel": "Sujet",
+    "subjectPlaceholder": "Question sur le calcul de marie-louise",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Dites-nous ce que vous avez en tête...",
+    "send": "Envoyer le message",
+    "sending": "Envoi en cours...",
+    "successTitle": "Message envoyé",
+    "successDescription": "Merci de nous avoir contactés. Nous vous répondrons bientôt.",
+    "errorTitle": "Un problème est survenu",
+    "errorDescription": "Veuillez réessayer plus tard ou nous écrire directement.",
+    "infoTitle": "Autres moyens de nous joindre",
+    "openSource": "Ceci est un projet open-source. Signalez des problèmes ou contribuez sur GitHub.",
+    "githubLink": "Voir sur GitHub"
+  },
+  "Footer": {
+    "productName": "Calculateur de Marie-Louise",
+    "productDescription": "Outil professionnel de calcul de marie-louise pour l'encadrement photo. Dimensions optimales avec les méthodes standard de l'industrie.",
+    "disclaimerTitle": "Avertissement",
+    "disclaimerText": "Cet outil fournit <b>des dimensions suggérées uniquement</b>. Vérifiez toujours les calculs et ajustez selon vos besoins et équipements.",
+    "safetyTitle": "Sécurité",
+    "safetyText": "<b>Prenez les précautions de sécurité appropriées</b> lors de la découpe des matériaux. Utilisez un équipement de protection adapté.",
+    "copyright": "© {year} Calculateur de Marie-Louise",
+    "professionalTool": "Outil d'encadrement professionnel",
+    "madeWith": "Conçu pour les encadreurs"
+  }
+}

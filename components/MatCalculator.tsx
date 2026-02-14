@@ -1,35 +1,47 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Calculator, RotateCcw, Image, FrameIcon, Layers, AlertCircle, ChevronUp, ChevronDown } from 'lucide-react'
+import {
+  Calculator,
+  ArrowCounterClockwise,
+  Image,
+  FrameCorners,
+  Stack,
+  WarningCircle,
+  Sliders,
+  Lightning,
+  CaretDown,
+  Scissors,
+} from '@phosphor-icons/react'
+import { useTranslations } from 'next-intl'
 import { MatCalculator } from '../lib/calculator'
+import { initAnalytics, trackPageView, analytics } from '../lib/analytics'
 import MatPreview from './MatPreview'
 import ResultsDisplay from './ResultsDisplay'
+import Navigation from './Navigation'
+import Footer from './Footer'
 
 interface Preset {
   frame: { width: number; height: number }
   photo: { width: number; height: number }
 }
 
-interface CalculationStyle {
-  value: string
-  label: string
-}
-
 const PRESETS: Record<string, Preset> = {
   'photo-10x15': { frame: { width: 200, height: 250 }, photo: { width: 100, height: 150 } },
   'photo-13x18': { frame: { width: 230, height: 280 }, photo: { width: 130, height: 180 } },
   'photo-20x30': { frame: { width: 300, height: 400 }, photo: { width: 200, height: 300 } },
-  'a4-frame': { frame: { width: 210, height: 297 }, photo: { width: 150, height: 200 } }
+  'a4-frame': { frame: { width: 210, height: 297 }, photo: { width: 150, height: 200 } },
 }
 
-const CALCULATION_STYLES: CalculationStyle[] = [
-  { value: 'proportional', label: 'Proportional - Equal margins' },
-  { value: 'uniform', label: 'Uniform - Average distribution' },
-  { value: 'talon', label: 'Talon - Classic style' },
-  { value: 'panoramic', label: 'Panoramic - Reduced horizontal margins' },
-  { value: 'portrait', label: 'Portrait - Reduced vertical margins' }
-]
+const STYLE_KEYS = ['proportional', 'uniform', 'talon', 'panoramic', 'portrait'] as const
+
+const STYLE_ICONS: Record<string, React.ReactNode> = {
+  proportional: <Stack size={16} weight="bold" />,
+  uniform: <FrameCorners size={16} weight="bold" />,
+  talon: <Scissors size={16} weight="bold" />,
+  panoramic: <Image size={16} weight="bold" />,
+  portrait: <Image size={16} weight="bold" style={{ transform: 'rotate(90deg)' }} />,
+}
 
 export default function MatCalculatorComponent() {
   const [calculator] = useState(() => new MatCalculator())
@@ -41,9 +53,22 @@ export default function MatCalculatorComponent() {
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [showResults, setShowResults] = useState(false)
-  const [isFormCollapsed, setIsFormCollapsed] = useState(false)
+  const [mode, setMode] = useState<'simple' | 'advanced'>('simple')
 
-  // Auto-calculate with debounce
+  const tForm = useTranslations('Form')
+  const tStyles = useTranslations('Styles')
+  const tInfo = useTranslations('Info')
+  const tCalc = useTranslations('Calculator')
+  const tMode = useTranslations('Mode')
+
+  // Initialize analytics & restore mode
+  useEffect(() => {
+    initAnalytics()
+    trackPageView('Calculator')
+    const saved = localStorage.getItem('mat-calc-mode')
+    if (saved === 'advanced') setMode('advanced')
+  }, [])
+
   const debounce = (func: Function, wait: number) => {
     let timeout: NodeJS.Timeout
     return function executedFunction(...args: any[]) {
@@ -58,26 +83,22 @@ export default function MatCalculatorComponent() {
 
   const calculate = useCallback(() => {
     setError(null)
-    
     if (!frameWidth || !frameHeight || !photoWidth || !photoHeight) {
       setShowResults(false)
       return
     }
-
     const frame = { width: frameWidth, height: frameHeight }
     const photo = { width: photoWidth, height: photoHeight }
-    
     const calculationResult = calculator.calculate(frame, photo, style)
-    
     if (calculationResult.error) {
       setError(calculationResult.error)
       setShowResults(false)
       return
     }
-    
     setResult(calculationResult)
     setShowResults(true)
-  }, [calculator, frameWidth, frameHeight, photoWidth, photoHeight, style])
+    analytics.calculationPerformed(style, mode)
+  }, [calculator, frameWidth, frameHeight, photoWidth, photoHeight, style, mode])
 
   const debouncedCalculate = useCallback(debounce(calculate, 300), [calculate])
 
@@ -103,7 +124,19 @@ export default function MatCalculatorComponent() {
       setFrameHeight(preset.frame.height.toString())
       setPhotoWidth(preset.photo.width.toString())
       setPhotoHeight(preset.photo.height.toString())
+      analytics.presetUsed(presetKey)
     }
+  }
+
+  const handleStyleChange = (newStyle: string) => {
+    setStyle(newStyle)
+    analytics.styleChanged(newStyle)
+  }
+
+  const handleModeToggle = (newMode: 'simple' | 'advanced') => {
+    setMode(newMode)
+    localStorage.setItem('mat-calc-mode', newMode)
+    analytics.modeToggled(newMode)
   }
 
   const validateInput = (value: string, setter: (value: string) => void) => {
@@ -113,7 +146,6 @@ export default function MatCalculatorComponent() {
     }
   }
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -125,330 +157,376 @@ export default function MatCalculatorComponent() {
         handleReset()
       }
     }
-
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [calculate])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="text-3xl">🖼️</div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Mat Calculator
-                </h1>
-                <p className="text-sm text-gray-600">
-                  Professional photo framing tool
-                </p>
-              </div>
-            </div>
-            <div className="hidden md:flex items-center space-x-2 text-sm">
-              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">
-                Professional
-              </span>
-              <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium">
-                Free
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--color-cream)' }}>
+      <Navigation />
 
-      {/* Sticky Form Section */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          {/* Form Header with Collapse Toggle */}
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-              <Calculator className="w-5 h-5 mr-2 text-blue-600" />
-              Input Parameters
-            </h2>
+      <main className="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-8 w-full">
+        {/* Page Title */}
+        <div className="text-center mb-8 animate-fade-in-up">
+          <h1
+            className="text-3xl sm:text-4xl font-bold mb-2"
+            style={{ fontFamily: "'DM Serif Display', Georgia, serif", color: 'var(--color-ink)' }}
+          >
+            {tForm('inputParameters')}
+          </h1>
+          <p className="text-base" style={{ color: 'var(--color-charcoal-muted)' }}>
+            {tInfo('description')}
+          </p>
+        </div>
+
+        {/* Mode Toggle */}
+        <div className="flex justify-center mb-8 animate-fade-in-up delay-1">
+          <div
+            className="inline-flex rounded-xl p-1"
+            style={{ backgroundColor: 'var(--color-cream-dark)', border: '1px solid var(--color-stone)' }}
+          >
             <button
-              onClick={() => setIsFormCollapsed(!isFormCollapsed)}
-              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+              onClick={() => handleModeToggle('simple')}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200"
+              style={{
+                backgroundColor: mode === 'simple' ? 'var(--color-white)' : 'transparent',
+                color: mode === 'simple' ? 'var(--color-amber-dark)' : 'var(--color-charcoal-muted)',
+                boxShadow: mode === 'simple' ? 'var(--shadow-sm)' : 'none',
+              }}
             >
-              <span className="text-sm mr-1">
-                {isFormCollapsed ? 'Expand' : 'Collapse'}
-              </span>
-              {isFormCollapsed ? (
-                <ChevronDown className="w-4 h-4" />
-              ) : (
-                <ChevronUp className="w-4 h-4" />
-              )}
+              <Lightning size={18} weight={mode === 'simple' ? 'fill' : 'regular'} />
+              {tMode('simple')}
+            </button>
+            <button
+              onClick={() => handleModeToggle('advanced')}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200"
+              style={{
+                backgroundColor: mode === 'advanced' ? 'var(--color-white)' : 'transparent',
+                color: mode === 'advanced' ? 'var(--color-amber-dark)' : 'var(--color-charcoal-muted)',
+                boxShadow: mode === 'advanced' ? 'var(--shadow-sm)' : 'none',
+              }}
+            >
+              <Sliders size={18} weight={mode === 'advanced' ? 'fill' : 'regular'} />
+              {tMode('advanced')}
             </button>
           </div>
+        </div>
 
-          {/* Collapsible Form Content */}
-          <div className={`transition-all duration-300 overflow-hidden ${isFormCollapsed ? 'max-h-0' : 'max-h-96'}`}>
-            <div className="grid md:grid-cols-5 gap-4">
-              
-              {/* Frame Dimensions */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                  <FrameIcon className="w-4 h-4 mr-2 text-blue-600" />
-                  Frame Interior
-                </h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Width (mm) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      step="1"
-                      min="0"
-                      placeholder="300"
-                      value={frameWidth}
-                      onChange={(e) => validateInput(e.target.value, setFrameWidth)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Height (mm) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      step="1"
-                      min="0"
-                      placeholder="400"
-                      value={frameHeight}
-                      onChange={(e) => validateInput(e.target.value, setFrameHeight)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
+        {/* Calculator Form */}
+        <div
+          className="rounded-2xl p-6 sm:p-8 mb-8 animate-fade-in-up delay-2"
+          style={{
+            backgroundColor: 'var(--color-white)',
+            border: '1px solid var(--color-stone)',
+            boxShadow: 'var(--shadow-md)',
+          }}
+        >
+          <div className={`grid gap-6 ${mode === 'advanced' ? 'md:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-2'}`}>
+
+            {/* Frame Dimensions */}
+            <fieldset>
+              <legend className="flex items-center gap-2 text-sm font-semibold mb-1" style={{ color: 'var(--color-ink)' }}>
+                <FrameCorners size={18} weight="bold" style={{ color: 'var(--color-amber)' }} />
+                {tForm('frameInterior')}
+              </legend>
+              <p className="text-xs mb-3" style={{ color: 'var(--color-charcoal-muted)' }}>
+                {tForm('frameDescription')}
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="frame-width" className="block text-xs font-medium mb-1.5" style={{ color: 'var(--color-charcoal-light)' }}>
+                    {tForm('widthMm')}
+                  </label>
+                  <input
+                    id="frame-width"
+                    type="number"
+                    step="1"
+                    min="0"
+                    placeholder="300"
+                    value={frameWidth}
+                    onChange={(e) => validateInput(e.target.value, setFrameWidth)}
+                    autoComplete="off"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="frame-height" className="block text-xs font-medium mb-1.5" style={{ color: 'var(--color-charcoal-light)' }}>
+                    {tForm('heightMm')}
+                  </label>
+                  <input
+                    id="frame-height"
+                    type="number"
+                    step="1"
+                    min="0"
+                    placeholder="400"
+                    value={frameHeight}
+                    onChange={(e) => validateInput(e.target.value, setFrameHeight)}
+                    autoComplete="off"
+                  />
                 </div>
               </div>
+            </fieldset>
 
-              {/* Photo Dimensions */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                  <Image className="w-4 h-4 mr-2 text-green-600" />
-                  Photo
-                </h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Width (mm) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      step="1"
-                      min="0"
-                      placeholder="200"
-                      value={photoWidth}
-                      onChange={(e) => validateInput(e.target.value, setPhotoWidth)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Height (mm) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      step="1"
-                      min="0"
-                      placeholder="300"
-                      value={photoHeight}
-                      onChange={(e) => validateInput(e.target.value, setPhotoHeight)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
+            {/* Photo Dimensions */}
+            <fieldset>
+              <legend className="flex items-center gap-2 text-sm font-semibold mb-1" style={{ color: 'var(--color-ink)' }}>
+                <Image size={18} weight="bold" style={{ color: 'var(--color-sage)' }} />
+                {tForm('photo')}
+              </legend>
+              <p className="text-xs mb-3" style={{ color: 'var(--color-charcoal-muted)' }}>
+                {tForm('photoDescription')}
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="photo-width" className="block text-xs font-medium mb-1.5" style={{ color: 'var(--color-charcoal-light)' }}>
+                    {tForm('widthMm')}
+                  </label>
+                  <input
+                    id="photo-width"
+                    type="number"
+                    step="1"
+                    min="0"
+                    placeholder="200"
+                    value={photoWidth}
+                    onChange={(e) => validateInput(e.target.value, setPhotoWidth)}
+                    autoComplete="off"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="photo-height" className="block text-xs font-medium mb-1.5" style={{ color: 'var(--color-charcoal-light)' }}>
+                    {tForm('heightMm')}
+                  </label>
+                  <input
+                    id="photo-height"
+                    type="number"
+                    step="1"
+                    min="0"
+                    placeholder="300"
+                    value={photoHeight}
+                    onChange={(e) => validateInput(e.target.value, setPhotoHeight)}
+                    autoComplete="off"
+                  />
                 </div>
               </div>
+            </fieldset>
 
-              {/* Style Selection */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                  <Layers className="w-4 h-4 mr-2 text-purple-600" />
-                  Style
-                </h3>
-                <select
-                  value={style}
-                  onChange={(e) => setStyle(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  {CALCULATION_STYLES.map((styleOption) => (
-                    <option key={styleOption.value} value={styleOption.value}>
-                      {styleOption.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            {/* Style Selection — Advanced only */}
+            {mode === 'advanced' && (
+              <fieldset className="animate-fade-in">
+                <legend className="flex items-center gap-2 text-sm font-semibold mb-1" style={{ color: 'var(--color-ink)' }}>
+                  <Scissors size={18} weight="bold" style={{ color: 'var(--color-rust)' }} />
+                  {tForm('style')}
+                </legend>
+                <p className="text-xs mb-3" style={{ color: 'var(--color-charcoal-muted)' }}>
+                  {tForm('styleDescription')}
+                </p>
+                <div className="relative">
+                  <select
+                    id="style-select"
+                    value={style}
+                    onChange={(e) => handleStyleChange(e.target.value)}
+                    className="appearance-none pr-10"
+                  >
+                    {STYLE_KEYS.map((styleKey) => (
+                      <option key={styleKey} value={styleKey}>
+                        {tStyles(styleKey)}
+                      </option>
+                    ))}
+                  </select>
+                  <CaretDown
+                    size={16}
+                    weight="bold"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                    style={{ color: 'var(--color-charcoal-muted)' }}
+                  />
+                </div>
+              </fieldset>
+            )}
 
-              {/* Quick Presets */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Presets</h3>
+            {/* Presets — Advanced only */}
+            {mode === 'advanced' && (
+              <div className="animate-fade-in">
+                <div className="flex items-center gap-2 text-sm font-semibold mb-1" style={{ color: 'var(--color-ink)' }}>
+                  <Stack size={18} weight="bold" style={{ color: 'var(--color-amber-light)' }} />
+                  {tForm('presets')}
+                </div>
+                <p className="text-xs mb-3" style={{ color: 'var(--color-charcoal-muted)' }}>
+                  {tForm('presetsDescription')}
+                </p>
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => handlePreset('photo-10x15')}
-                    className="bg-white hover:bg-gray-100 text-gray-700 font-medium px-2 py-1 rounded text-xs border border-gray-200 hover:border-gray-300 transition-all duration-200"
-                  >
-                    10×15
-                  </button>
-                  <button
-                    onClick={() => handlePreset('photo-13x18')}
-                    className="bg-white hover:bg-gray-100 text-gray-700 font-medium px-2 py-1 rounded text-xs border border-gray-200 hover:border-gray-300 transition-all duration-200"
-                  >
-                    13×18
-                  </button>
-                  <button
-                    onClick={() => handlePreset('photo-20x30')}
-                    className="bg-white hover:bg-gray-100 text-gray-700 font-medium px-2 py-1 rounded text-xs border border-gray-200 hover:border-gray-300 transition-all duration-200"
-                  >
-                    20×30
-                  </button>
-                  <button
-                    onClick={() => handlePreset('a4-frame')}
-                    className="bg-white hover:bg-gray-100 text-gray-700 font-medium px-2 py-1 rounded text-xs border border-gray-200 hover:border-gray-300 transition-all duration-200"
-                  >
-                    A4
-                  </button>
+                  {Object.keys(PRESETS).map((key) => {
+                    const label = key.replace('photo-', '').replace('a4-frame', 'A4')
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => handlePreset(key)}
+                        className="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+                        style={{
+                          backgroundColor: 'var(--color-cream)',
+                          border: '1px solid var(--color-stone)',
+                          color: 'var(--color-charcoal)',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--color-amber)'
+                          e.currentTarget.style.backgroundColor = 'var(--color-amber-glow)'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--color-stone)'
+                          e.currentTarget.style.backgroundColor = 'var(--color-cream)'
+                        }}
+                      >
+                        {label}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
+            )}
 
-              {/* Action Buttons */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Actions</h3>
-                <div className="space-y-2">
-                  <button 
-                    onClick={calculate} 
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium px-3 py-2 rounded text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center"
-                  >
-                    <Calculator className="w-4 h-4 mr-1" />
-                    Calculate
-                  </button>
-                  <button 
-                    onClick={handleReset} 
-                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-3 py-2 rounded text-sm border border-gray-200 hover:border-gray-300 transition-all duration-200 flex items-center justify-center"
-                  >
-                    <RotateCcw className="w-4 h-4 mr-1" />
-                    Reset
-                  </button>
-                </div>
+            {/* Actions */}
+            <div className={mode === 'advanced' ? '' : 'md:col-span-2'}>
+              <div className="flex items-center gap-2 text-sm font-semibold mb-1" style={{ color: 'var(--color-ink)' }}>
+                <Calculator size={18} weight="bold" style={{ color: 'var(--color-amber)' }} />
+                {tForm('actions')}
               </div>
-
-            </div>
-            
-            {/* Keyboard Shortcuts */}
-            <div className="text-xs text-gray-500 text-center mt-4 bg-gray-50 p-2 rounded">
-              <kbd className="bg-white px-2 py-1 rounded border text-xs">Ctrl + Enter</kbd> to calculate •{' '}
-              <kbd className="bg-white px-2 py-1 rounded border text-xs">Esc</kbd> to reset
+              <p className="text-xs mb-3" style={{ color: 'var(--color-charcoal-muted)' }}>&nbsp;</p>
+              <div className={`flex gap-3 ${mode === 'simple' ? 'flex-row' : 'flex-col'}`}>
+                <button
+                  onClick={calculate}
+                  className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
+                  style={{
+                    backgroundColor: 'var(--color-amber)',
+                    color: 'var(--color-white)',
+                    boxShadow: '0 2px 8px rgba(200, 134, 58, 0.3)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--color-amber-dark)'
+                    e.currentTarget.style.transform = 'translateY(-1px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--color-amber)'
+                    e.currentTarget.style.transform = 'translateY(0)'
+                  }}
+                >
+                  <Calculator size={18} weight="bold" />
+                  {tForm('calculate')}
+                </button>
+                <button
+                  onClick={handleReset}
+                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200"
+                  style={{
+                    backgroundColor: 'var(--color-cream)',
+                    color: 'var(--color-charcoal-muted)',
+                    border: '1px solid var(--color-stone)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--color-stone-dark)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--color-stone)'
+                  }}
+                >
+                  <ArrowCounterClockwise size={18} weight="bold" />
+                  {tForm('reset')}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Main Results Area */}
-      <main className="flex-1 max-w-6xl mx-auto px-4 py-8 w-full">
-        {/* Error Display */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-xl mb-6">
-            <div className="flex items-center">
-              <AlertCircle className="w-5 h-5 mr-3 text-red-600" />
-              <span className="font-medium">{error}</span>
+          {/* Keyboard Shortcuts — Advanced only */}
+          {mode === 'advanced' && (
+            <div
+              className="text-xs text-center mt-6 pt-4 animate-fade-in"
+              style={{ borderTop: '1px solid var(--color-stone)', color: 'var(--color-charcoal-muted)' }}
+            >
+              <kbd
+                className="px-2 py-0.5 rounded text-xs font-mono"
+                style={{ backgroundColor: 'var(--color-cream)', border: '1px solid var(--color-stone)' }}
+              >
+                Ctrl + Enter
+              </kbd>{' '}
+              {tForm('toCalculate')} &middot;{' '}
+              <kbd
+                className="px-2 py-0.5 rounded text-xs font-mono"
+                style={{ backgroundColor: 'var(--color-cream)', border: '1px solid var(--color-stone)' }}
+              >
+                Esc
+              </kbd>{' '}
+              {tForm('toReset')}
             </div>
+          )}
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div
+            className="flex items-center gap-3 px-5 py-4 rounded-xl mb-6 animate-fade-in-up"
+            style={{
+              backgroundColor: 'var(--color-rust-light)',
+              border: '1px solid var(--color-rust)',
+              color: 'var(--color-rust)',
+            }}
+          >
+            <WarningCircle size={22} weight="fill" />
+            <span className="font-medium text-sm">{tCalc(error)}</span>
           </div>
         )}
 
-        {/* Results */}
+        {/* Results or Info */}
         {showResults && result ? (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fade-in-up delay-3">
             <ResultsDisplay result={result} calculator={calculator} />
             <MatPreview result={result} calculator={calculator} />
           </div>
-        ) : (
-          /* Info Section */
-          <section className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 text-center">
-            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center">
-              <Calculator className="w-10 h-10 text-blue-600" />
+        ) : !error && (
+          <section
+            className="rounded-2xl p-8 sm:p-10 text-center animate-fade-in-up delay-3"
+            style={{
+              backgroundColor: 'var(--color-white)',
+              border: '1px solid var(--color-stone)',
+              boxShadow: 'var(--shadow-sm)',
+            }}
+          >
+            <div
+              className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center"
+              style={{ backgroundColor: 'var(--color-amber-glow)' }}
+            >
+              <FrameCorners size={40} weight="duotone" style={{ color: 'var(--color-amber)' }} />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Professional Mat Calculator
+            <h2
+              className="text-2xl font-bold mb-3"
+              style={{ fontFamily: "'DM Serif Display', Georgia, serif", color: 'var(--color-ink)' }}
+            >
+              {tInfo('title')}
             </h2>
-            <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              Enter your frame and photo dimensions to get optimal mat dimensions
-              according to different framing styles.
+            <p className="mb-8 max-w-md mx-auto" style={{ color: 'var(--color-charcoal-muted)' }}>
+              {tInfo('description')}
             </p>
-            <div className="grid md:grid-cols-3 gap-4 text-sm">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 p-4 rounded-xl">
-                <div className="font-semibold text-blue-900 mb-2">✨ 5 Styles Available</div>
-                <div className="text-blue-700">Proportional, Uniform, Talon, Panoramic, Portrait</div>
-              </div>
-              <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 p-4 rounded-xl">
-                <div className="font-semibold text-green-900 mb-2">📏 Visual Preview</div>
-                <div className="text-green-700">Real-time visualization with annotations</div>
-              </div>
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 p-4 rounded-xl">
-                <div className="font-semibold text-purple-900 mb-2">💡 Recommendations</div>
-                <div className="text-purple-700">Expert advice for optimal framing</div>
-              </div>
+            <div className="grid sm:grid-cols-3 gap-4 text-sm">
+              {[
+                { key: 'styles', icon: <Scissors size={22} weight="duotone" />, color: 'var(--color-amber)' },
+                { key: 'preview', icon: <Image size={22} weight="duotone" />, color: 'var(--color-sage)' },
+                { key: 'recommendations', icon: <Lightning size={22} weight="duotone" />, color: 'var(--color-rust)' },
+              ].map((item) => (
+                <div
+                  key={item.key}
+                  className="rounded-xl p-5"
+                  style={{ backgroundColor: 'var(--color-cream)', border: '1px solid var(--color-stone)' }}
+                >
+                  <div className="mb-2" style={{ color: item.color }}>{item.icon}</div>
+                  <div className="font-semibold mb-1" style={{ color: 'var(--color-ink)' }}>
+                    {tInfo(`${item.key}Title` as any)}
+                  </div>
+                  <div style={{ color: 'var(--color-charcoal-muted)' }}>
+                    {tInfo(`${item.key}Description` as any)}
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-auto">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="space-y-4">
-            {/* Product Info */}
-            <div className="text-center">
-              <div className="flex items-center justify-center space-x-2 text-lg font-semibold text-gray-900 mb-2">
-                <span>🖼️</span>
-                <span>Mat Calculator</span>
-              </div>
-              <p className="text-sm text-gray-600 max-w-2xl mx-auto">
-                Professional mat calculation tool for photo framing. Provides optimal mat dimensions using industry-standard methods 
-                including proportional, uniform, talon, panoramic, and portrait styles.
-              </p>
-            </div>
-
-            {/* Disclaimers */}
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <h4 className="font-semibold text-amber-900 mb-2 flex items-center">
-                    ⚠️ Important Disclaimer
-                  </h4>
-                  <p className="text-amber-800">
-                    This tool provides <strong>suggested dimensions only</strong>. Always verify calculations and adjust 
-                    results according to your specific needs, materials, and equipment capabilities.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-amber-900 mb-2 flex items-center">
-                    🛡️ Safety First
-                  </h4>
-                  <p className="text-amber-800">
-                    <strong>Take proper safety precautions</strong> when cutting materials. Use appropriate protective 
-                    equipment, follow tool safety guidelines, and work in a well-ventilated area.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Copyright */}
-            <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 pt-4 border-t border-gray-100">
-              <div className="flex items-center space-x-4">
-                <span>© {new Date().getFullYear()} Mat Calculator App</span>
-                <span className="hidden md:inline">•</span>
-                <span className="hidden md:inline">Professional framing tool</span>
-              </div>
-              <div className="flex items-center space-x-4 mt-2 md:mt-0">
-                <span>Made with ❤️ for framers</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
-

@@ -1,0 +1,142 @@
+{
+  "Nav": {
+    "calculator": "Calculator",
+    "howTo": "How to Use",
+    "contact": "Contact"
+  },
+  "Header": {
+    "title": "Mat Calculator",
+    "subtitle": "Professional photo framing tool",
+    "professional": "Professional",
+    "free": "Free"
+  },
+  "Mode": {
+    "simple": "Simple",
+    "advanced": "Advanced",
+    "simpleDescription": "Quick calculation with essentials",
+    "advancedDescription": "Full control with styles & presets"
+  },
+  "Form": {
+    "inputParameters": "Calculate Your Mat",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "frameInterior": "Frame Interior",
+    "frameDescription": "Inside dimensions of your frame",
+    "widthMm": "Width (mm)",
+    "heightMm": "Height (mm)",
+    "photo": "Photo / Artwork",
+    "photoDescription": "Dimensions of the piece to frame",
+    "style": "Cutting Style",
+    "styleDescription": "How margins are distributed",
+    "presets": "Quick Presets",
+    "presetsDescription": "Common photo sizes",
+    "actions": "Actions",
+    "calculate": "Calculate Mat",
+    "reset": "Reset",
+    "toCalculate": "to calculate",
+    "toReset": "to reset"
+  },
+  "Styles": {
+    "proportional": "Proportional — Equal margins",
+    "uniform": "Uniform — Average distribution",
+    "talon": "Talon — Classic fine art",
+    "panoramic": "Panoramic — Wide format",
+    "portrait": "Portrait — Vertical emphasis"
+  },
+  "StyleNames": {
+    "proportional": "Proportional",
+    "uniform": "Uniform",
+    "talon": "Talon",
+    "panoramic": "Panoramic",
+    "portrait": "Portrait"
+  },
+  "Info": {
+    "title": "Professional Mat Calculator",
+    "description": "Enter your frame and photo dimensions to get optimal mat dimensions according to different framing styles.",
+    "stylesTitle": "5 Styles Available",
+    "stylesDescription": "Proportional, Uniform, Talon, Panoramic, Portrait",
+    "previewTitle": "Visual Preview",
+    "previewDescription": "Real-time visualization with annotations",
+    "recommendationsTitle": "Smart Recommendations",
+    "recommendationsDescription": "Expert advice for optimal framing"
+  },
+  "Results": {
+    "title": "Mat Dimensions",
+    "top": "Top",
+    "right": "Right",
+    "bottom": "Bottom",
+    "left": "Left",
+    "mm": "mm",
+    "styleApplied": "Style Applied",
+    "recommendations": "Recommendations"
+  },
+  "Preview": {
+    "title": "Visual Preview",
+    "photo": "Photo",
+    "frame": "Frame: {width} × {height} mm",
+    "scale": "Scale: {percentage}%"
+  },
+  "Calculator": {
+    "errorPhotoTooLarge": "Photo is too large for the frame interior",
+    "recSmallMargins": "Very small margins — consider a larger frame",
+    "recGenerousMargins": "Generous margins — perfect for showcasing the photo",
+    "recTalonApplied": "Talon style applied — classic visual weight at bottom",
+    "recBalancedMargins": "Perfectly balanced margins on all sides",
+    "recOptimalDimensions": "Optimal dimensions for professional framing"
+  },
+  "HowTo": {
+    "title": "How to Use the Mat Calculator",
+    "heroDescription": "A step-by-step guide to calculating perfect mat dimensions for your photo framing projects.",
+    "step1Title": "Measure Your Frame",
+    "step1Description": "Measure the interior dimensions of your frame in millimeters. This is the opening inside the frame where the mat will sit — not the outside frame dimensions.",
+    "step2Title": "Measure Your Photo",
+    "step2Description": "Measure the photo or artwork you want to frame. Enter the width and height in millimeters. Make sure to measure the visible area you want displayed.",
+    "step3Title": "Choose a Style",
+    "step3Description": "Select a cutting style that suits your aesthetic. For traditional art, try Talon style which adds more weight at the bottom — a classic fine art framing technique.",
+    "step4Title": "Read Your Results",
+    "step4Description": "The calculator shows the exact mat margins for each side (top, right, bottom, left) in millimeters. Use these measurements when cutting your mat board.",
+    "stylesTitle": "Understanding Mat Styles",
+    "proportionalDesc": "Equal margins on all sides. The simplest and most modern approach, ideal for contemporary photography.",
+    "uniformDesc": "Averaged distribution that creates even visual weight. Great for standard photo sizes.",
+    "talonDesc": "Larger bottom margin following the fine arts tradition. This creates visual stability and is the preferred style for gallery-quality framing.",
+    "panoramicDesc": "Reduced horizontal margins to emphasize wide-format images. Perfect for landscape photography.",
+    "portraitDesc": "Reduced vertical margins to emphasize tall images. Ideal for vertical portraits and architectural shots.",
+    "tipsTitle": "Pro Tips",
+    "tip1": "Always add 2-3mm to your photo dimensions for mounting tolerance.",
+    "tip2": "For acid-free preservation, use museum-quality mat board.",
+    "tip3": "Use a sharp blade and metal ruler for clean cuts.",
+    "tip4": "Practice cuts on scrap mat board before cutting your final piece."
+  },
+  "Contact": {
+    "title": "Get in Touch",
+    "heroDescription": "Have a question, suggestion, or found a bug? We'd love to hear from you.",
+    "nameLabel": "Your Name",
+    "namePlaceholder": "John Doe",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "john@example.com",
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "Question about mat calculation",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Tell us what's on your mind...",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "successTitle": "Message Sent",
+    "successDescription": "Thank you for reaching out. We'll get back to you soon.",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "Please try again later or email us directly.",
+    "infoTitle": "Other Ways to Reach Us",
+    "openSource": "This is an open-source project. Report issues or contribute on GitHub.",
+    "githubLink": "View on GitHub"
+  },
+  "Footer": {
+    "productName": "Mat Calculator",
+    "productDescription": "Professional mat calculation tool for photo framing. Calculate optimal mat dimensions using industry-standard methods.",
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerText": "This tool provides <b>suggested dimensions only</b>. Always verify calculations and adjust results according to your specific needs and equipment.",
+    "safetyTitle": "Safety",
+    "safetyText": "<b>Take proper safety precautions</b> when cutting materials. Use appropriate protective equipment and follow tool safety guidelines.",
+    "copyright": "© {year} Mat Calculator",
+    "professionalTool": "Professional framing tool",
+    "madeWith": "Crafted for framers"
+  }
+}
