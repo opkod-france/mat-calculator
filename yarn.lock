@@ -61,6 +61,11 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
+"@fontsource-variable/instrument-sans@^5.2.8":
+  version "5.2.8"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/instrument-sans/-/instrument-sans-5.2.8.tgz#357753c4cb92380130bff79e58ac9b89e6a97bbb"
+  integrity sha512-mTCaukbdIjjoipj2E3Q5XoZM3ZxJWdzyHevf/LG/0PHlfF9Q85pxOM7B7A9MerFyxmRzz5kVlumgIvgDSG4CPg==
+
 "@formatjs/ecma402-abstract@3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@formatjs/ecma402-abstract/-/ecma402-abstract-3.1.1.tgz#329fa5eed8024ee389e9c82be8c798315631b11d"

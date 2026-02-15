@@ -19,21 +19,22 @@ export default function LanguageToggle() {
   return (
     <button
       onClick={toggleLocale}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+      className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[13px] font-medium transition-colors duration-100"
       style={{
-        backgroundColor: 'var(--color-cream-dark)',
-        color: 'var(--color-charcoal-muted)',
-        border: '1px solid var(--color-stone)',
+        color: 'var(--text-secondary)',
+        border: '1px solid var(--border)',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = 'var(--color-stone-dark)'
+        e.currentTarget.style.backgroundColor = 'var(--bg-sunken)'
+        e.currentTarget.style.color = 'var(--text-primary)'
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'var(--color-stone)'
+        e.currentTarget.style.backgroundColor = 'transparent'
+        e.currentTarget.style.color = 'var(--text-secondary)'
       }}
       title={locale === 'fr' ? 'Switch to English' : 'Passer en français'}
     >
-      <GlobeSimple size={16} weight="bold" />
+      <GlobeSimple size={14} />
       {locale === 'fr' ? 'EN' : 'FR'}
     </button>
   )

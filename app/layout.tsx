@@ -1,21 +1,8 @@
 import type { Metadata } from 'next'
-import { DM_Sans, DM_Serif_Display } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
+import '@fontsource-variable/instrument-sans'
 import '../styles/globals.css'
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-})
-
-const dmSerif = DM_Serif_Display({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-serif',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mat-calculator.opkod.dev'),
@@ -29,7 +16,7 @@ export const metadata: Metadata = {
   creator: 'Mat Calculator',
   publisher: 'Mat Calculator',
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='2' width='28' height='28' rx='4' fill='%23C8863A'/><rect x='8' y='8' width='16' height='16' rx='1' fill='%23FAF7F2'/><rect x='11' y='11' width='10' height='10' fill='%23E8E0D4'/></svg>",
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232563EB'/><rect x='7' y='7' width='18' height='18' rx='2' fill='white' fill-opacity='0.9'/><rect x='11' y='11' width='10' height='10' fill='%232563EB' fill-opacity='0.15'/></svg>",
   },
   openGraph: {
     type: 'website',
@@ -61,20 +48,16 @@ export const metadata: Metadata = {
   },
 }
 
-// Static JSON-LD structured data (no user input - safe for inline script)
+// Static JSON-LD structured data (no user input — safe for inline script)
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Mat Calculator',
-  description: 'Professional mat calculator for photo framing. Calculate optimal mat dimensions with 5 different styles.',
+  description: 'Professional mat calculator for photo framing.',
   url: 'https://mat-calculator.opkod.dev',
   applicationCategory: 'UtilityApplication',
   operatingSystem: 'Any',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-  },
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   featureList: ['Proportional mat calculation', 'Talon style calculation', 'Panoramic mat calculation', 'Portrait mat calculation', 'Real-time visual preview', 'Bilingual (English/French)'],
   inLanguage: ['en', 'fr'],
 })
@@ -88,7 +71,7 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={`${dmSans.variable} ${dmSerif.variable}`}>
+    <html lang={locale}>
       <head>
         {/* JSON-LD: static structured data with no user input */}
         <script
@@ -96,7 +79,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: jsonLd }}
         />
       </head>
-      <body style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <body>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>

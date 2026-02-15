@@ -16,85 +16,82 @@ const NAV_ITEMS = [
 export default function Navigation() {
   const pathname = usePathname()
   const t = useTranslations('Nav')
-  const tHeader = useTranslations('Header')
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
     <header
-      className="sticky top-0 z-50 border-b"
+      className="sticky top-0 z-50"
       style={{
-        backgroundColor: 'var(--color-cream)',
-        borderColor: 'var(--color-stone)',
+        backgroundColor: 'var(--bg-elevated)',
+        borderBottom: '1px solid var(--border)',
       }}
     >
-      <nav className="max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
+      <nav className="max-w-5xl mx-auto px-5 sm:px-6">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
+          <Link href="/" className="flex items-center gap-2 group">
             <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
-              style={{ backgroundColor: 'var(--color-amber)', color: 'var(--color-white)' }}
+              className="w-7 h-7 rounded-md flex items-center justify-center"
+              style={{ backgroundColor: 'var(--accent)', color: 'white' }}
             >
-              <FrameCorners size={20} weight="bold" />
+              <FrameCorners size={16} weight="bold" />
             </div>
-            <div className="hidden sm:block">
-              <span
-                className="text-lg font-semibold tracking-tight"
-                style={{ fontFamily: "'DM Serif Display', Georgia, serif", color: 'var(--color-ink)' }}
-              >
-                {tHeader('title')}
-              </span>
-            </div>
+            <span className="text-[15px] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+              Mat Calculator
+            </span>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-0.5">
             {NAV_ITEMS.map(({ href, labelKey, icon: Icon }) => {
               const isActive = pathname === href
               return (
                 <Link
                   key={href}
                   href={href}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium transition-colors duration-100"
                   style={{
-                    backgroundColor: isActive ? 'var(--color-amber-glow)' : 'transparent',
-                    color: isActive ? 'var(--color-amber-dark)' : 'var(--color-charcoal-muted)',
+                    backgroundColor: isActive ? 'var(--accent-soft)' : 'transparent',
+                    color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.backgroundColor = 'var(--color-cream-dark)'
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'var(--bg-sunken)'
+                      e.currentTarget.style.color = 'var(--text-primary)'
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive) e.currentTarget.style.backgroundColor = 'transparent'
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'transparent'
+                      e.currentTarget.style.color = 'var(--text-secondary)'
+                    }
                   }}
                 >
-                  <Icon size={18} weight={isActive ? 'fill' : 'regular'} />
+                  <Icon size={15} weight={isActive ? 'fill' : 'regular'} />
                   {t(labelKey)}
                 </Link>
               )
             })}
           </div>
 
-          {/* Right side */}
-          <div className="flex items-center gap-2">
+          {/* Right */}
+          <div className="flex items-center gap-1.5">
             <LanguageToggle />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg transition-colors duration-200"
-              style={{ color: 'var(--color-charcoal-muted)' }}
+              className="md:hidden p-1.5 rounded-md transition-colors"
+              style={{ color: 'var(--text-secondary)' }}
               aria-label="Toggle menu"
             >
-              {mobileOpen ? <X size={22} weight="bold" /> : <List size={22} weight="bold" />}
+              {mobileOpen ? <X size={20} weight="bold" /> : <List size={20} weight="bold" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Nav */}
         {mobileOpen && (
-          <div
-            className="md:hidden pb-4 animate-slide-down"
-            style={{ borderTop: '1px solid var(--color-stone)' }}
-          >
-            <div className="flex flex-col gap-1 pt-3">
+          <div className="md:hidden pb-3 animate-in" style={{ borderTop: '1px solid var(--border)' }}>
+            <div className="flex flex-col gap-0.5 pt-2">
               {NAV_ITEMS.map(({ href, labelKey, icon: Icon }) => {
                 const isActive = pathname === href
                 return (
@@ -102,13 +99,13 @@ export default function Navigation() {
                     key={href}
                     href={href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200"
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium"
                     style={{
-                      backgroundColor: isActive ? 'var(--color-amber-glow)' : 'transparent',
-                      color: isActive ? 'var(--color-amber-dark)' : 'var(--color-charcoal)',
+                      backgroundColor: isActive ? 'var(--accent-soft)' : 'transparent',
+                      color: isActive ? 'var(--accent)' : 'var(--text-primary)',
                     }}
                   >
-                    <Icon size={20} weight={isActive ? 'fill' : 'regular'} />
+                    <Icon size={18} weight={isActive ? 'fill' : 'regular'} />
                     {t(labelKey)}
                   </Link>
                 )

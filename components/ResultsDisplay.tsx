@@ -22,19 +22,19 @@ interface ResultsDisplayProps {
   calculator: MatCalculator
 }
 
-const DIRECTION_META: Record<string, { icon: React.ReactNode; colorVar: string }> = {
-  top: { icon: <ArrowUp size={16} weight="bold" />, colorVar: 'var(--color-amber)' },
-  right: { icon: <ArrowRight size={16} weight="bold" />, colorVar: 'var(--color-sage)' },
-  bottom: { icon: <ArrowDown size={16} weight="bold" />, colorVar: 'var(--color-rust)' },
-  left: { icon: <ArrowLeft size={16} weight="bold" />, colorVar: 'var(--color-amber-dark)' },
-}
+const DIRS = [
+  { key: 'top' as const, icon: ArrowUp },
+  { key: 'right' as const, icon: ArrowRight },
+  { key: 'bottom' as const, icon: ArrowDown },
+  { key: 'left' as const, icon: ArrowLeft },
+]
 
 const REC_ICONS: Record<string, React.ReactNode> = {
-  recSmallMargins: <WarningCircle size={16} weight="fill" />,
-  recGenerousMargins: <Lightbulb size={16} weight="fill" />,
-  recTalonApplied: <Scissors size={16} weight="fill" />,
-  recBalancedMargins: <Scales size={16} weight="fill" />,
-  recOptimalDimensions: <CheckCircle size={16} weight="fill" />,
+  recSmallMargins: <WarningCircle size={15} weight="fill" />,
+  recGenerousMargins: <Lightbulb size={15} weight="fill" />,
+  recTalonApplied: <Scissors size={15} weight="fill" />,
+  recBalancedMargins: <Scales size={15} weight="fill" />,
+  recOptimalDimensions: <CheckCircle size={15} weight="fill" />,
 }
 
 export default function ResultsDisplay({ result, calculator }: ResultsDisplayProps) {
@@ -45,79 +45,65 @@ export default function ResultsDisplay({ result, calculator }: ResultsDisplayPro
 
   return (
     <div
-      className="rounded-2xl p-6 sm:p-8"
-      style={{
-        backgroundColor: 'var(--color-white)',
-        border: '1px solid var(--color-stone)',
-        boxShadow: 'var(--shadow-md)',
-      }}
+      className="rounded-lg p-5 sm:p-6"
+      style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}
     >
-      <h2
-        className="text-xl font-bold mb-6 flex items-center gap-2"
-        style={{ fontFamily: "'DM Serif Display', Georgia, serif", color: 'var(--color-ink)' }}
-      >
-        <Ruler size={24} weight="duotone" style={{ color: 'var(--color-amber)' }} />
+      <h2 className="text-[16px] font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+        <Ruler size={18} weight="bold" style={{ color: 'var(--accent)' }} />
         {t('title')}
       </h2>
 
-      {/* Dimensions Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        {(['top', 'right', 'bottom', 'left'] as const).map((dir) => {
-          const meta = DIRECTION_META[dir]
-          return (
-            <div
-              key={dir}
-              className="rounded-xl p-4 text-center"
-              style={{ backgroundColor: 'var(--color-cream)', border: '1px solid var(--color-stone)' }}
-            >
-              <div className="flex items-center justify-center gap-1.5 mb-2">
-                <span style={{ color: meta.colorVar }}>{meta.icon}</span>
-                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--color-charcoal-muted)' }}>
-                  {t(dir)}
-                </span>
-              </div>
-              <div className="text-2xl font-bold" style={{ color: 'var(--color-ink)' }}>
-                {formatted[dir]}
-              </div>
-              <div className="text-xs" style={{ color: 'var(--color-charcoal-muted)' }}>{t('mm')}</div>
+      {/* Dimensions — 4-col grid with large numbers */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+        {DIRS.map(({ key, icon: Icon }) => (
+          <div
+            key={key}
+            className="rounded-md p-3 text-center"
+            style={{ backgroundColor: 'var(--bg-sunken)' }}
+          >
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <Icon size={13} style={{ color: 'var(--text-tertiary)' }} />
+              <span className="text-[11px] font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+                {t(key)}
+              </span>
             </div>
-          )
-        })}
+            <div className="text-[22px] font-semibold tabular-nums" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+              {formatted[key]}
+            </div>
+            <div className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>{t('mm')}</div>
+          </div>
+        ))}
       </div>
 
-      {/* Style Applied */}
+      {/* Style badge */}
       <div
-        className="flex items-center justify-between rounded-xl px-5 py-3.5 mb-6"
-        style={{ backgroundColor: 'var(--color-amber-glow)', border: '1px solid rgba(200, 134, 58, 0.2)' }}
+        className="flex items-center justify-between rounded-md px-4 py-2.5 mb-4"
+        style={{ backgroundColor: 'var(--accent-soft)', border: '1px solid var(--accent-medium)' }}
       >
-        <span className="text-sm font-medium" style={{ color: 'var(--color-charcoal-light)' }}>
+        <span className="text-[13px] font-medium" style={{ color: 'var(--text-secondary)' }}>
           {t('styleApplied')}
         </span>
-        <span className="flex items-center gap-2 font-semibold" style={{ color: 'var(--color-amber-dark)' }}>
-          <Scissors size={16} weight="bold" />
+        <span className="flex items-center gap-1.5 text-[13px] font-semibold" style={{ color: 'var(--accent)' }}>
+          <Scissors size={14} weight="bold" />
           {tStyleNames(result.style)}
         </span>
       </div>
 
       {/* Recommendations */}
-      {result.recommendations && result.recommendations.length > 0 && (
+      {result.recommendations?.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--color-ink)' }}>
+          <h3 className="text-[13px] font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
             {t('recommendations')}
           </h3>
-          <div className="space-y-2">
-            {result.recommendations.map((recKey: string, index: number) => (
+          <div className="space-y-1.5">
+            {result.recommendations.map((recKey: string, i: number) => (
               <div
-                key={index}
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm"
-                style={{
-                  backgroundColor: 'var(--color-sage-light)',
-                  border: '1px solid rgba(122, 139, 111, 0.2)',
-                  color: 'var(--color-charcoal)',
-                }}
+                key={i}
+                className="flex items-center gap-2 px-3 py-2 rounded-md text-[13px]"
+                style={{ backgroundColor: 'var(--success-soft)', color: 'var(--text-secondary)' }}
               >
-                <span style={{ color: 'var(--color-sage)' }}>
-                  {REC_ICONS[recKey] || <ArrowsOutSimple size={16} weight="fill" />}
+                <span style={{ color: 'var(--success)' }}>
+                  {REC_ICONS[recKey] || <ArrowsOutSimple size={15} weight="fill" />}
                 </span>
                 {tCalc(recKey)}
               </div>

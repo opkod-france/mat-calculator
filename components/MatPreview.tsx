@@ -19,8 +19,6 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
 
   const formatted = calculator.formatDimensions(result)
   const topMargin = formatted.top * scale
-  const rightMargin = formatted.right * scale
-  const bottomMargin = formatted.bottom * scale
   const leftMargin = formatted.left * scale
 
   const t = useTranslations('Preview')
@@ -28,24 +26,17 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
 
   return (
     <div
-      className="rounded-2xl p-6 sm:p-8"
-      style={{
-        backgroundColor: 'var(--color-white)',
-        border: '1px solid var(--color-stone)',
-        boxShadow: 'var(--shadow-md)',
-      }}
+      className="rounded-lg p-5 sm:p-6"
+      style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}
     >
-      <div className="flex flex-col items-center space-y-5">
-        <h3
-          className="text-lg font-bold flex items-center gap-2"
-          style={{ fontFamily: "'DM Serif Display', Georgia, serif", color: 'var(--color-ink)' }}
-        >
-          <Eye size={22} weight="duotone" style={{ color: 'var(--color-amber)' }} />
+      <div className="flex flex-col items-center space-y-4">
+        <h3 className="text-[16px] font-semibold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+          <Eye size={18} weight="bold" style={{ color: 'var(--accent)' }} />
           {t('title')}
         </h3>
 
         <div
-          className="relative animate-scale-in"
+          className="relative animate-scale"
           style={{
             width: `${frameWidth + 40}px`,
             height: `${frameHeight + 40}px`,
@@ -53,21 +44,20 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
             minHeight: '200px',
           }}
         >
-          {/* Frame (dark border) */}
+          {/* Frame */}
           <div
-            className="absolute shadow-lg"
+            className="absolute"
             style={{
               width: `${frameWidth + 16}px`,
               height: `${frameHeight + 16}px`,
               top: '12px',
               left: '12px',
-              backgroundColor: 'var(--color-charcoal)',
-              border: '2px solid var(--color-ink)',
+              backgroundColor: 'var(--bg-inverse)',
               borderRadius: '2px',
             }}
           />
 
-          {/* Mat (white area) */}
+          {/* Mat */}
           <div
             className="absolute"
             style={{
@@ -75,8 +65,8 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
               height: `${frameHeight}px`,
               top: '20px',
               left: '20px',
-              backgroundColor: 'var(--color-cream)',
-              border: '2px solid var(--color-stone-dark)',
+              backgroundColor: 'var(--bg-elevated)',
+              border: '1px solid var(--border)',
             }}
           >
             {/* Photo */}
@@ -87,51 +77,42 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
                 height: `${photoHeight}px`,
                 top: `${topMargin}px`,
                 left: `${leftMargin}px`,
-                backgroundColor: 'var(--color-cream-dark)',
-                border: '2px solid var(--color-charcoal-light)',
+                backgroundColor: 'var(--bg-sunken)',
+                border: '1px solid var(--border-strong)',
               }}
             >
-              <div className="text-center p-2">
-                <Image
-                  size={24}
-                  weight="duotone"
-                  style={{ color: 'var(--color-charcoal-muted)', margin: '0 auto 4px' }}
-                />
-                <div className="text-xs font-medium" style={{ color: 'var(--color-charcoal)' }}>
-                  {t('photo')}
-                </div>
-                <div className="text-xs" style={{ color: 'var(--color-charcoal-muted)' }}>
-                  {result.photo.width} × {result.photo.height} {tResults('mm')}
+              <div className="text-center p-1">
+                <Image size={20} weight="regular" style={{ color: 'var(--text-tertiary)', margin: '0 auto 2px' }} />
+                <div className="text-[10px] font-medium" style={{ color: 'var(--text-secondary)' }}>
+                  {result.photo.width}×{result.photo.height}
                 </div>
               </div>
             </div>
 
             {/* Annotations */}
             {[
-              { value: formatted.top, className: 'absolute -top-6 left-1/2 -translate-x-1/2' },
-              { value: formatted.right, className: 'absolute top-1/2 -right-10 -translate-y-1/2 rotate-90 origin-center' },
-              { value: formatted.bottom, className: 'absolute -bottom-6 left-1/2 -translate-x-1/2' },
-              { value: formatted.left, className: 'absolute top-1/2 -left-10 -translate-y-1/2 -rotate-90 origin-center' },
+              { value: formatted.top, pos: 'absolute -top-5 left-1/2 -translate-x-1/2' },
+              { value: formatted.right, pos: 'absolute top-1/2 -right-9 -translate-y-1/2 rotate-90 origin-center' },
+              { value: formatted.bottom, pos: 'absolute -bottom-5 left-1/2 -translate-x-1/2' },
+              { value: formatted.left, pos: 'absolute top-1/2 -left-9 -translate-y-1/2 -rotate-90 origin-center' },
             ].map((ann, i) => (
               <div
                 key={i}
-                className={`${ann.className} text-xs font-bold px-2 py-0.5 rounded`}
+                className={`${ann.pos} text-[10px] font-semibold px-1.5 py-0.5 rounded-sm tabular-nums`}
                 style={{
-                  backgroundColor: 'var(--color-amber)',
-                  color: 'var(--color-white)',
+                  backgroundColor: 'var(--accent)',
+                  color: 'white',
                   whiteSpace: 'nowrap',
                 }}
               >
-                {ann.value} {tResults('mm')}
+                {ann.value}
               </div>
             ))}
           </div>
         </div>
 
-        <div className="text-sm text-center" style={{ color: 'var(--color-charcoal-muted)' }}>
-          {t('frame', { width: result.frame.width, height: result.frame.height })}
-          <br />
-          {t('scale', { percentage: Math.round(scale * 100) })}
+        <div className="text-[12px] text-center" style={{ color: 'var(--text-tertiary)' }}>
+          {t('frame', { width: result.frame.width, height: result.frame.height })} &middot; {t('scale', { percentage: Math.round(scale * 100) })}
         </div>
       </div>
     </div>
