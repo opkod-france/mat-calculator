@@ -45,7 +45,7 @@ export default function ResultsDisplay({ result, calculator }: ResultsDisplayPro
 
   return (
     <div
-      className="rounded-lg p-5 sm:p-6"
+      className="rounded-lg p-4 sm:p-6"
       style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}
     >
       <h2 className="text-[16px] font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
@@ -58,7 +58,7 @@ export default function ResultsDisplay({ result, calculator }: ResultsDisplayPro
         {DIRS.map(({ key, icon: Icon }) => (
           <div
             key={key}
-            className="rounded-md p-3 text-center"
+            className="rounded-md p-2.5 sm:p-3 text-center"
             style={{ backgroundColor: 'var(--bg-sunken)' }}
           >
             <div className="flex items-center justify-center gap-1 mb-1">
@@ -77,7 +77,7 @@ export default function ResultsDisplay({ result, calculator }: ResultsDisplayPro
 
       {/* Style badge */}
       <div
-        className="flex items-center justify-between rounded-md px-4 py-2.5 mb-4"
+        className="flex items-center justify-between rounded-md px-3 sm:px-4 py-2.5 mb-4"
         style={{ backgroundColor: 'var(--accent-soft)', border: '1px solid var(--accent-medium)' }}
       >
         <span className="text-[13px] font-medium" style={{ color: 'var(--text-secondary)' }}>

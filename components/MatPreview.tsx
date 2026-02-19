@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { Eye, Image } from '@phosphor-icons/react'
 import { MatCalculator } from '../lib/calculator'
@@ -11,7 +11,31 @@ interface MatPreviewProps {
 }
 
 export default function MatPreview({ result, calculator }: MatPreviewProps) {
-  const scale = 0.8
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = useState(0)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width)
+      }
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  // Extra space needed around the frame for the outer border + annotations
+  const padding = 40
+  const desiredWidth = result.frame.width * 0.8 + padding
+  // Fit within container (minus card padding), cap at 0.8
+  const maxScale = containerWidth > 0
+    ? Math.min(0.8, (containerWidth - padding) / result.frame.width)
+    : 0.8
+  const scale = Math.max(0.3, maxScale)
+
   const frameWidth = result.frame.width * scale
   const frameHeight = result.frame.height * scale
   const photoWidth = result.photo.width * scale
@@ -22,11 +46,11 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
   const leftMargin = formatted.left * scale
 
   const t = useTranslations('Preview')
-  const tResults = useTranslations('Results')
 
   return (
     <div
-      className="rounded-lg p-5 sm:p-6"
+      ref={containerRef}
+      className="rounded-lg p-4 sm:p-6 overflow-hidden"
       style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}
     >
       <div className="flex flex-col items-center space-y-4">
@@ -38,10 +62,11 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
         <div
           className="relative animate-scale"
           style={{
-            width: `${frameWidth + 40}px`,
-            height: `${frameHeight + 40}px`,
-            minWidth: '200px',
-            minHeight: '200px',
+            width: `${frameWidth + padding}px`,
+            height: `${frameHeight + padding}px`,
+            minWidth: '160px',
+            minHeight: '160px',
+            maxWidth: '100%',
           }}
         >
           {/* Frame */}
@@ -82,8 +107,8 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
               }}
             >
               <div className="text-center p-1">
-                <Image size={20} weight="regular" style={{ color: 'var(--text-tertiary)', margin: '0 auto 2px' }} />
-                <div className="text-[10px] font-medium" style={{ color: 'var(--text-secondary)' }}>
+                <Image size={16} weight="regular" style={{ color: 'var(--text-tertiary)', margin: '0 auto 2px' }} />
+                <div className="text-[9px] sm:text-[10px] font-medium" style={{ color: 'var(--text-secondary)' }}>
                   {result.photo.width}×{result.photo.height}
                 </div>
               </div>
@@ -98,7 +123,7 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
             ].map((ann, i) => (
               <div
                 key={i}
-                className={`${ann.pos} text-[10px] font-semibold px-1.5 py-0.5 rounded-sm tabular-nums`}
+                className={`${ann.pos} text-[9px] sm:text-[10px] font-semibold px-1 sm:px-1.5 py-0.5 rounded-sm tabular-nums`}
                 style={{
                   backgroundColor: 'var(--accent)',
                   color: 'white',
@@ -111,7 +136,7 @@ export default function MatPreview({ result, calculator }: MatPreviewProps) {
           </div>
         </div>
 
-        <div className="text-[12px] text-center" style={{ color: 'var(--text-tertiary)' }}>
+        <div className="text-[11px] sm:text-[12px] text-center" style={{ color: 'var(--text-tertiary)' }}>
           {t('frame', { width: result.frame.width, height: result.frame.height })} &middot; {t('scale', { percentage: Math.round(scale * 100) })}
         </div>
       </div>

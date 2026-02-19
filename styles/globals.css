@@ -147,6 +147,26 @@ input[type="number"] {
   color: var(--text-primary);
 }
 
+/* ─── Mobile — touch targets & spacing ─── */
+@media (max-width: 640px) {
+  html, body {
+    overflow-x: hidden;
+  }
+
+  input[type="number"],
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    padding: 12px;
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  button {
+    min-height: 44px; /* WCAG 2.5.8 touch target minimum */
+  }
+}
+
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

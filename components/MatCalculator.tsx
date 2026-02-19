@@ -157,7 +157,7 @@ export default function MatCalculatorComponent() {
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--bg)' }}>
       <Navigation />
 
-      <main className="flex-1 max-w-3xl mx-auto px-5 sm:px-6 py-8 w-full">
+      <main className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-5 sm:py-8 w-full">
         {/* Header — left-aligned, tight */}
         <div className="mb-6 animate-in">
           <h1 className="text-[28px] font-semibold tracking-tight mb-1" style={{ color: 'var(--text-primary)' }}>
@@ -169,7 +169,7 @@ export default function MatCalculatorComponent() {
         </div>
 
         {/* Mode Toggle — pill style, compact */}
-        <div className="flex items-center gap-3 mb-6 animate-in delay-1">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-6 animate-in delay-1">
           <div
             className="inline-flex rounded-md p-0.5"
             style={{ backgroundColor: 'var(--bg-sunken)', border: '1px solid var(--border)' }}
@@ -178,7 +178,7 @@ export default function MatCalculatorComponent() {
               <button
                 key={m}
                 onClick={() => handleModeToggle(m)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-[13px] font-medium transition-all duration-100"
+                className="flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded text-[13px] font-medium transition-all duration-100"
                 style={{
                   backgroundColor: mode === m ? 'var(--bg-elevated)' : 'transparent',
                   color: mode === m ? 'var(--text-primary)' : 'var(--text-tertiary)',
@@ -197,7 +197,7 @@ export default function MatCalculatorComponent() {
 
         {/* Form Card */}
         <div
-          className="rounded-lg p-5 sm:p-6 mb-6 animate-in delay-2"
+          className="rounded-lg p-4 sm:p-6 mb-6 animate-in delay-2"
           style={{
             backgroundColor: 'var(--bg-elevated)',
             border: '1px solid var(--border)',
@@ -323,10 +323,10 @@ export default function MatCalculatorComponent() {
           )}
 
           {/* Actions bar */}
-          <div className="flex items-center gap-2.5 pt-5" style={{ borderTop: '1px solid var(--border)' }}>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 pt-5" style={{ borderTop: '1px solid var(--border)' }}>
             <button
               onClick={calculate}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-md text-[14px] font-semibold transition-all duration-100"
+              className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-md text-[14px] font-semibold transition-all duration-100"
               style={{
                 backgroundColor: 'var(--accent)',
                 color: 'white',
@@ -340,7 +340,7 @@ export default function MatCalculatorComponent() {
             </button>
             <button
               onClick={handleReset}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-md text-[14px] font-medium transition-all duration-100"
+              className="flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-3 sm:py-2.5 rounded-md text-[14px] font-medium transition-all duration-100"
               style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-sunken)'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}

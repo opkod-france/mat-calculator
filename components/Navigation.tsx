@@ -26,7 +26,7 @@ export default function Navigation() {
         borderBottom: '1px solid var(--border)',
       }}
     >
-      <nav className="max-w-5xl mx-auto px-5 sm:px-6">
+      <nav className="max-w-5xl mx-auto px-3 sm:px-6">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
@@ -75,11 +75,11 @@ export default function Navigation() {
           </div>
 
           {/* Right */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             <LanguageToggle />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-1.5 rounded-md transition-colors"
+              className="md:hidden p-2 rounded-md transition-colors"
               style={{ color: 'var(--text-secondary)' }}
               aria-label="Toggle menu"
             >
@@ -99,7 +99,7 @@ export default function Navigation() {
                     key={href}
                     href={href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium"
+                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-md text-sm font-medium"
                     style={{
                       backgroundColor: isActive ? 'var(--accent-soft)' : 'transparent',
                       color: isActive ? 'var(--accent)' : 'var(--text-primary)',

@@ -9,10 +9,10 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto" style={{ borderTop: '1px solid var(--border)' }}>
-      <div className="max-w-5xl mx-auto px-5 sm:px-6 py-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
         {/* Disclaimers — compact row */}
         <div
-          className="grid sm:grid-cols-2 gap-4 text-[13px] mb-5 p-4 rounded-md"
+          className="grid sm:grid-cols-2 gap-3 sm:gap-4 text-[13px] mb-4 sm:mb-5 p-3 sm:p-4 rounded-md"
           style={{ backgroundColor: 'var(--bg-sunken)' }}
         >
           <div>
@@ -36,7 +36,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex items-center justify-between text-[12px]" style={{ color: 'var(--text-tertiary)' }}>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-1 text-[12px]" style={{ color: 'var(--text-tertiary)' }}>
           <div className="flex items-center gap-1.5">
             <FrameCorners size={14} weight="bold" style={{ color: 'var(--accent)' }} />
             <span>{t('copyright', { year: new Date().getFullYear().toString() })}</span>
