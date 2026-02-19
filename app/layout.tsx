@@ -1,8 +1,12 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import '@fontsource-variable/instrument-sans'
 import '../styles/globals.css'
+
+export const viewport: Viewport = {
+  themeColor: '#2563EB',
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mat-calculator.opkod.dev'),
@@ -17,6 +21,12 @@ export const metadata: Metadata = {
   publisher: 'Mat Calculator',
   icons: {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232563EB'/><rect x='7' y='7' width='18' height='18' rx='2' fill='white' fill-opacity='0.9'/><rect x='11' y='11' width='10' height='10' fill='%232563EB' fill-opacity='0.15'/></svg>",
+    apple: '/icons/apple-touch-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Mat Calc',
   },
   openGraph: {
     type: 'website',
@@ -77,6 +87,12 @@ export default async function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLd }}
+        />
+        {/* Service Worker registration — static string, no user input */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js')})}`,
+          }}
         />
       </head>
       <body>
